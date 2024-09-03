@@ -3,6 +3,7 @@ package mx.platacard.kts
 import kotlinx.coroutines.runBlocking
 import org.jetbrains.kotlin.mainKts.MainKtsScript
 import java.io.File
+import kotlin.script.experimental.api.ScriptDiagnostic.Severity
 import kotlin.script.experimental.host.toScriptSource
 import kotlin.script.experimental.jvm.util.isError
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
@@ -20,15 +21,19 @@ object KtsCompiler {
         return when {
             resultWithDiagnostics.isError().not() -> Result.Success
             else -> {
+                val results =
+                    resultWithDiagnostics.reports.filter {
+                        it.severity == Severity.ERROR || it.severity == Severity.FATAL
+                    }
                 val message =
-                    resultWithDiagnostics.reports.joinToString(separator = "\n") {
+                    results.joinToString(separator = "\n") {
                         it.render(
                             withStackTrace = true,
                         )
                     }
                 Result.Failure(
                     formattedMessage = message,
-                    errors = resultWithDiagnostics.reports.mapNotNull { it.exception },
+                    errors = results.mapNotNull { it.exception },
                 )
             }
         }

@@ -5,7 +5,7 @@ coroutines = "1.8.1"
 junit = "5.11.0"
 
 # Output
-kts-compiler = "1.0.0"
+kts-compiler = "1.0.1"
 
 [libraries]
 kts-jvm-host = { module = "org.jetbrains.kotlin:kotlin-scripting-jvm-host", version.ref = "kotlin" }

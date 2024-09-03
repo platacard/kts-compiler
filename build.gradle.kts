@@ -1,9 +1,7 @@
 plugins {
     kotlin("jvm") version libs.versions.kotlin
+    id("maven-publish")
 }
-
-group = "mx.platacard"
-version = libs.versions.kts.compiler
 
 repositories {
     mavenCentral()
@@ -17,6 +15,20 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(platform(libs.junit.bom))
     testRuntimeOnly(libs.junit.engine)
+}
+
+publishing {
+    publications {
+        create<MavenPublication>("maven") {
+            groupId = "mx.platacard"
+            artifactId = "kts-compiler"
+            version =
+                libs.versions.kts.compiler
+                    .get()
+
+            from(components["kotlin"])
+        }
+    }
 }
 
 tasks.test {

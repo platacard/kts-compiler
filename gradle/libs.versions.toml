@@ -1,0 +1,18 @@
+[versions]
+# Kotlin
+kotlin = "2.0.0"
+coroutines = "1.8.1"
+junit = "5.11.0"
+
+# Output
+kts-compiler = "1.0.0"
+
+[libraries]
+kts-jvm-host = { module = "org.jetbrains.kotlin:kotlin-scripting-jvm-host", version.ref = "kotlin" }
+kts-main = { module = "org.jetbrains.kotlin:kotlin-main-kts", version.ref = "kotlin" }
+coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
+junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
+junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }
+
+[plugins]
+

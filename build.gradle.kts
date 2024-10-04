@@ -1,5 +1,8 @@
+import org.jetbrains.kotlin.gradle.tasks.KotlinJvmCompile
+
 plugins {
     kotlin("jvm") version libs.versions.kotlin
+    application
     id("maven-publish")
 }
 
@@ -20,6 +23,34 @@ dependencies {
     testImplementation(kotlin("test"))
     testImplementation(platform(libs.junit.bom))
     testRuntimeOnly(libs.junit.engine)
+}
+
+application {
+    mainClass.set("mx.platacard.kts.MainKt")
+}
+
+tasks.withType<KotlinJvmCompile>().configureEach {
+    compilerOptions.freeCompilerArgs.add("-Xallow-kotlin-package")
+}
+
+tasks.jar {
+    // archiveClassifier.set("all") // Name the jar as "all" to indicate it's a fat jar
+
+    // Include all dependencies in the jar
+    from(sourceSets.main.get().output)
+
+    dependsOn(configurations.runtimeClasspath)
+    from({
+        configurations.runtimeClasspath
+            .get()
+            .filter { it.name.endsWith("jar") }
+            .map { zipTree(it) }
+    })
+
+    manifest {
+        attributes["Main-Class"] = "mx.platacard.kts.MainKt"
+    }
+    duplicatesStrategy = DuplicatesStrategy.EXCLUDE
 }
 
 publishing {

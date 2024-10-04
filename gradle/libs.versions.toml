@@ -5,11 +5,14 @@ coroutines = "1.8.1"
 junit = "5.11.0"
 
 # Output
-kts-compiler = "1.0.2"
+kts-compiler = "1.0.3"
 
 [libraries]
-kts-jvm-host = { module = "org.jetbrains.kotlin:kotlin-scripting-jvm-host", version.ref = "kotlin" }
-kts-main = { module = "org.jetbrains.kotlin:kotlin-main-kts", version.ref = "kotlin" }
+kts-scripting-common = { module = "org.jetbrains.kotlin:kotlin-scripting-common", version.ref = "kotlin" }
+kts-scripting-jvm = { module = "org.jetbrains.kotlin:kotlin-scripting-jvm", version.ref = "kotlin" }
+kts-scripting-jvm-host = { module = "org.jetbrains.kotlin:kotlin-scripting-jvm-host", version.ref = "kotlin" }
+kts-scripting-jvm-dependencies = { module = "org.jetbrains.kotlin:kotlin-scripting-dependencies", version.ref = "kotlin" }
+apache-ivy = { module = "org.apache.ivy:ivy", version.ref = "kotlin" }
 coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "coroutines" }
 junit-bom = { module = "org.junit:junit-bom", version.ref = "junit" }
 junit-engine = { module = "org.junit.jupiter:junit-jupiter-engine" }

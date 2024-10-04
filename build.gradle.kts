@@ -8,8 +8,13 @@ repositories {
 }
 
 dependencies {
-    implementation(libs.kts.jvm.host)
-    implementation(libs.kts.main)
+    implementation(kotlin("stdlib"))
+    implementation(kotlin("reflect"))
+    implementation(libs.kts.scripting.common)
+    implementation(libs.kts.scripting.jvm)
+    implementation(libs.kts.scripting.jvm.host)
+    implementation(libs.kts.scripting.jvm.dependencies)
+    implementation(libs.apache.ivy)
     implementation(libs.coroutines.core)
 
     testImplementation(kotlin("test"))
@@ -33,6 +38,9 @@ publishing {
 
 tasks.test {
     useJUnitPlatform()
+}
+java {
+    version = 17
 }
 kotlin {
     jvmToolchain(17)

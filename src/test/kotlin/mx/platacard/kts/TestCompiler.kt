@@ -9,14 +9,14 @@ internal class TestCompiler {
     @Test
     fun testSuccess() {
         val successFile = File("src/test/resources/mx/platacard/kts/success.main.kts")
-        val result = KtsCompiler.compileSync(successFile)
+        val result = KtsCompiler.compile(successFile)
         assertEquals(Result.Success, result)
     }
 
     @Test
     fun testFailure() {
         val successFile = File("src/test/resources/mx/platacard/kts/failed.main.kts")
-        val result = KtsCompiler.compileSync(successFile)
+        val result = KtsCompiler.compile(successFile)
         assertTrue { result is Result.Failure }
     }
 }

@@ -1,10 +1,13 @@
 plugins {
     kotlin("jvm") version libs.versions.kotlin
+    application
     id("maven-publish")
+    id("com.github.johnrengelman.shadow") version "8.1.1"
 }
 
 repositories {
     mavenCentral()
+    gradlePluginPortal()
 }
 
 dependencies {
@@ -44,4 +47,17 @@ java {
 }
 kotlin {
     jvmToolchain(17)
+}
+
+application {
+    mainClass.set("mx.platacard.kts.MainKtKt")
+}
+
+tasks.shadowJar {
+    archiveBaseName.set("kts-compiler")
+    archiveClassifier.set("")
+    archiveVersion.set("")
+    manifest {
+        attributes(mapOf("Main-Class" to "mx.platacard.kts.MainKtKt"))
+    }
 }

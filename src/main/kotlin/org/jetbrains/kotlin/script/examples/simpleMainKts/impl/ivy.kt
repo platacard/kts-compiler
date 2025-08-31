@@ -81,6 +81,10 @@ class IvyResolver : ExternalDependenciesResolver {
                     isM2compatible = true
                     isUsepoms = true
                     name = "central"
+                    root = "https://repo1.maven.org/maven2/"
+                    // Включаем обработку транзитивных зависимостей
+                    isCheckconsistency = false
+                    isValidate = false
                 },
             )
         }
@@ -161,6 +165,9 @@ class IvyResolver : ExternalDependenciesResolver {
                     isM2compatible = true
                     name = url.host
                     root = url.toExternalForm()
+                    // Включаем обработку транзитивных зависимостей
+                    isCheckconsistency = false
+                    isValidate = false
                 },
             )
             return true.asSuccess()

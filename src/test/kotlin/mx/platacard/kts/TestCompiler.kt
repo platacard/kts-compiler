@@ -75,4 +75,25 @@ internal class TestCompiler {
         val result = KtsCompiler.compile(transitiveFile)
         assertEquals(Result.Success, result)
     }
+
+    @Test
+    fun testTransitiveDependencies() {
+        val transitiveDepsFile = File("src/test/resources/mx/platacard/kts/test-transitive-dependencies.main.kts")
+        val result = KtsCompiler.compile(transitiveDepsFile)
+        assertEquals(Result.Success, result)
+    }
+
+    @Test
+    fun testSpringTransitive() {
+        val springTransitiveFile = File("src/test/resources/mx/platacard/kts/test-spring-transitive.main.kts")
+        val result = KtsCompiler.compile(springTransitiveFile)
+        assertEquals(Result.Success, result)
+    }
+
+    @Test
+    fun testRealTransitive() {
+        val realTransitiveFile = File("src/test/resources/mx/platacard/kts/test-real-transitive.main.kts")
+        val result = KtsCompiler.compile(realTransitiveFile)
+        assertEquals(Result.Success, result)
+    }
 }

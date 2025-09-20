@@ -75,7 +75,8 @@ class IvyResolver : ExternalDependenciesResolver {
         conf: String? = null,
         type: String? = null,
     ): ResultWithDiagnostics<List<File>> {
-        if (ivyResolvers.isEmpty() || ivyResolvers.none { it.name == "central" }) {
+        // Всегда добавляем Maven Central как fallback, если его еще нет
+        if (ivyResolvers.none { it.name == "central" }) {
             ivyResolvers.add(
                 IBiblioResolver().apply {
                     isM2compatible = true
@@ -90,6 +91,10 @@ class IvyResolver : ExternalDependenciesResolver {
         }
         val ivySettings =
             IvySettings().apply {
+                // Отключаем автоматическое добавление суффиксов к версиям
+                setVariable("ivy.working.dir", System.getProperty("java.io.tmpdir"))
+                setVariable("ivy.cache.dir", System.getProperty("java.io.tmpdir"))
+                
                 val resolver =
                     if (ivyResolvers.size == 1) {
                         ivyResolvers.first()
@@ -109,8 +114,11 @@ class IvyResolver : ExternalDependenciesResolver {
 
         val moduleDescriptor =
             DefaultModuleDescriptor.newDefaultInstance(
-                ModuleRevisionId.newInstance(groupId, "$artifactName-caller", "working"),
-            )
+                ModuleRevisionId.newInstance(groupId, "$artifactName-caller", "1.0.0"),
+            ).apply {
+                // Отключаем автоматическое добавление суффиксов
+                setStatus("release")
+            }
 
         val depsDescriptor =
             DefaultDependencyDescriptor(
@@ -124,7 +132,7 @@ class IvyResolver : ExternalDependenciesResolver {
             val depArtifact = DefaultDependencyArtifactDescriptor(depsDescriptor, artifactName, type, type, null, null)
             depsDescriptor.addDependencyArtifact(conf, depArtifact)
         }
-        depsDescriptor.addDependencyConfiguration("default", "master,compile")
+        depsDescriptor.addDependencyConfiguration("default", "master,compile,runtime")
         moduleDescriptor.addDependency(depsDescriptor)
 
         val resolveOptions =
@@ -132,6 +140,9 @@ class IvyResolver : ExternalDependenciesResolver {
                 confs = arrayOf("default")
                 log = LogOptions.LOG_QUIET
                 isOutputReport = false
+                // Отключаем автоматическое добавление суффиксов к версиям
+                isUseCacheOnly = false
+                isTransitive = true
             }
 
         // init resolve report

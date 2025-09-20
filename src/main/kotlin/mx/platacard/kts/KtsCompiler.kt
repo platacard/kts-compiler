@@ -13,20 +13,19 @@ import kotlin.script.experimental.host.toScriptSource
 import kotlin.script.experimental.jvm.util.isError
 import kotlin.script.experimental.jvmhost.BasicJvmScriptingHost
 import kotlin.script.experimental.jvmhost.createJvmCompilationConfigurationFromTemplate
+import kotlinx.coroutines.runBlocking
 
 object KtsCompiler {
-    private fun BasicScriptingHost.compileScript(
-        script: SourceCode,
-        compilationConfiguration: ScriptCompilationConfiguration,
-    ): ResultWithDiagnostics<CompiledScript> = runInCoroutineContext { compiler(script, compilationConfiguration) }
-
     private fun compileFile(
         scriptFile: File,
         cacheDir: File? = null,
     ): ResultWithDiagnostics<CompiledScript> =
         withMainKtsCacheDir(cacheDir?.absolutePath ?: "") {
             val scriptDefinition = createJvmCompilationConfigurationFromTemplate<SimpleMainKtsScript>()
-            BasicJvmScriptingHost().compileScript(scriptFile.toScriptSource(), scriptDefinition)
+            val host = BasicJvmScriptingHost()
+            runBlocking {
+                host.compiler(scriptFile.toScriptSource(), scriptDefinition)
+            }
         }
 
     fun compile(scriptFile: File): Result {
@@ -53,6 +52,7 @@ object KtsCompiler {
         }
     }
 
+
     private fun <T> withMainKtsCacheDir(
         value: String?,
         body: () -> T,
@@ -74,3 +74,4 @@ object KtsCompiler {
         }
     }
 }
+

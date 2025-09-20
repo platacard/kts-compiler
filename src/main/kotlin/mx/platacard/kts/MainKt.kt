@@ -4,37 +4,14 @@ import java.io.File
 
 fun main(args: Array<String>) {
     if (args.isEmpty()) {
-        println("Usage: kts-compiler [--syntax-only] <script-file> [script-file2] ...")
+        println("Usage: kts-compiler <script-file> [script-file2] ...")
         println("Example: kts-compiler script.main.kts")
-        println("Example: kts-compiler --syntax-only script.main.kts")
         System.exit(1)
     }
 
     var hasErrors = false
-    var syntaxOnly = false
-    val scriptFiles = mutableListOf<String>()
     
-    // Parse arguments
-    var i = 0
-    while (i < args.size) {
-        when (args[i]) {
-            "--syntax-only" -> {
-                syntaxOnly = true
-                i++
-            }
-            else -> {
-                scriptFiles.add(args[i])
-                i++
-            }
-        }
-    }
-    
-    if (scriptFiles.isEmpty()) {
-        println("Error: No script files specified")
-        System.exit(1)
-    }
-    
-    for (scriptPath in scriptFiles) {
+    for (scriptPath in args) {
         val scriptFile = File(scriptPath)
         
         if (!scriptFile.exists()) {
@@ -49,12 +26,8 @@ fun main(args: Array<String>) {
             continue
         }
         
-        println("Compiling: $scriptPath${if (syntaxOnly) " (syntax only)" else ""}")
-        val result = if (syntaxOnly) {
-            SyntaxOnlyCompiler.compile(scriptFile)
-        } else {
-            KtsCompiler.compile(scriptFile)
-        }
+        println("Compiling: $scriptPath")
+        val result = KtsCompiler.compile(scriptFile)
         
         when (result) {
             is Result.Success -> {

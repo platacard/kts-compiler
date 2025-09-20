@@ -2,22 +2,14 @@
 
 @file:Repository("https://repo1.maven.org/maven2/")
 @file:DependsOn("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.8.1")
-@file:DependsOn("com.github.ajalt:clikt:4.4.0")
+@file:DependsOn("org.apache.commons:commons-lang3:3.13.0")
 
-import com.github.ajalt.clikt.core.CliktCommand
-import com.github.ajalt.clikt.parameters.arguments.argument
-import com.github.ajalt.clikt.parameters.arguments.default
+import org.apache.commons.lang3.StringUtils
 import kotlinx.coroutines.runBlocking
 
-class TestPublicDepsCommand : CliktCommand() {
-    private val name: String by argument(
-        name = "name",
-        help = "Name to greet"
-    ).default("World")
+val name = if (args.isNotEmpty()) args[0] else "World"
 
-    override fun run() = runBlocking {
-        println("Hello, $name from coroutines!")
-    }
+runBlocking {
+    val greeting = StringUtils.capitalize("hello, $name from coroutines and apache commons!")
+    println(greeting)
 }
-
-TestPublicDepsCommand().main(args)

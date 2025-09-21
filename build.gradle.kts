@@ -62,3 +62,47 @@ tasks.shadowJar {
     }
 }
 
+// Configure distributions to include the KTS script
+distributions {
+    main {
+        contents {
+            from("check-kts-scripts.main.kts") {
+                into("bin")
+            }
+            from("README.md") {
+                into("docs")
+            }
+            from("DISTRIBUTION-README.md") {
+                into(".")
+                rename { "README.md" }
+            }
+        }
+    }
+}
+
+// Custom task to create a complete distribution with script
+tasks.register<Zip>("distWithScript") {
+    group = "distribution"
+    description = "Creates a distribution ZIP with JAR and KTS script"
+    
+    archiveBaseName.set("kts-compiler")
+    archiveClassifier.set("complete")
+    archiveVersion.set("")
+    
+    from(tasks.shadowJar) {
+        into("lib")
+    }
+    
+    from("check-kts-scripts.main.kts") {
+        into("bin")
+    }
+    
+    from("README.md") {
+        into("docs")
+    }
+    from("DISTRIBUTION-README.md") {
+        into(".")
+        rename { "README.md" }
+    }
+}
+

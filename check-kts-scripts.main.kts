@@ -34,7 +34,12 @@ if (!inputFile.exists()) {
     System.exit(1)
 }
 
-val jarPath = "build/libs/kts-compiler.jar"
+// Try to find JAR in different locations
+val jarPath = when {
+    File("lib/kts-compiler.jar").exists() -> "lib/kts-compiler.jar"  // Distribution
+    File("build/libs/kts-compiler.jar").exists() -> "build/libs/kts-compiler.jar"  // Development
+    else -> "build/libs/kts-compiler.jar"  // Default fallback
+}
 val jarFile = File(jarPath)
 
 if (!jarFile.exists()) {

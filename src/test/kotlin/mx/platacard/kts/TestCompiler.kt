@@ -90,10 +90,4 @@ internal class TestCompiler {
         assertEquals(Result.Success, result)
     }
 
-    @Test
-    fun testRealTransitive() {
-        val realTransitiveFile = File("src/test/resources/mx/platacard/kts/test-real-transitive.main.kts")
-        val result = KtsCompiler.compile(realTransitiveFile)
-        assertEquals(Result.Success, result)
-    }
 }

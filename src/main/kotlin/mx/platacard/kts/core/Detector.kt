@@ -1,7 +1,7 @@
-package mx.platacard.kts
+package mx.platacard.kts.core
 
-import org.jetbrains.kotlin.script.examples.simpleMainKts.COMPILED_SCRIPTS_CACHE_DIR_PROPERTY
-import org.jetbrains.kotlin.script.examples.simpleMainKts.SimpleMainKtsScript
+import mx.platacard.kts.resolver.COMPILED_SCRIPTS_CACHE_DIR_PROPERTY
+import mx.platacard.kts.resolver.SimpleMainKtsScript
 import java.io.File
 import kotlin.script.experimental.api.CompiledScript
 import kotlin.script.experimental.api.ResultWithDiagnostics

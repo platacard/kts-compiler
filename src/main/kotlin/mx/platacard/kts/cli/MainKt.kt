@@ -1,5 +1,7 @@
-package mx.platacard.kts
+package mx.platacard.kts.cli
 
+import mx.platacard.kts.core.KtsCompiler
+import mx.platacard.kts.core.Result
 import java.io.File
 
 fun main(args: Array<String>) {

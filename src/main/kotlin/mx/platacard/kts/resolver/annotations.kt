@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package org.jetbrains.kotlin.script.examples.simpleMainKts
+package mx.platacard.kts.resolver
 
 /**
  * Import other script(s)

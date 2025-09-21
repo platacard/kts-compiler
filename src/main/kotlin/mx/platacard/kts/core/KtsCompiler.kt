@@ -1,4 +1,4 @@
-package mx.platacard.kts
+package mx.platacard.kts.core
 
 import java.io.File
 

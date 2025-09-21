@@ -1,4 +1,4 @@
-package org.jetbrains.kotlin.script.examples.simpleMainKts
+package mx.platacard.kts.resolver
 
 import kotlin.script.experimental.annotations.KotlinScript
 

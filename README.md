@@ -122,7 +122,9 @@ MyCommand().main(args)
 
 ### Using the Standalone JAR
 
-First, build the standalone JAR:
+Download jar and script from releases (recomended)
+
+or build your own standalone JAR:
 
 ```bash
 ./gradlew shadowJar
@@ -138,7 +140,7 @@ kotlinc -script check-kts-scripts.main.kts -- script.main.kts
 kotlinc -script check-kts-scripts.main.kts -- /path/to/scripts/
 ```
 
-### GitHub Actions
+### Possible config for GitHub Actions
 
 ```yaml
 name: Check KTS Scripts
@@ -163,42 +165,23 @@ jobs:
       - name: Build JAR
         run: ./gradlew shadowJar
         
+        # place the JAR on the same node as the KTS script and adjust path to jar in the script
       - name: Check KTS scripts
         run: kotlinc -script check-kts-scripts.main.kts -- /path/to/your/scripts/
 ```
 
-### GitLab CI
+### Possible config GitLab CI
 
 ```yaml
 check-kts-scripts:
   stage: test
   image: openjdk:17
   script:
-    - ./gradlew shadowJar
+    # place the JAR on the same node as the KTS script and adjust path to jar in the script
     - kotlinc -script check-kts-scripts.main.kts -- /path/to/your/scripts/
   only:
     changes:
       - "**/*.main.kts"
-```
-
-### Jenkins
-
-```groovy
-pipeline {
-    agent any
-    stages {
-        stage('Build') {
-            steps {
-                sh './gradlew shadowJar'
-            }
-        }
-        stage('Check KTS Scripts') {
-            steps {
-                sh 'kotlinc -script check-kts-scripts.main.kts -- /path/to/your/scripts/'
-            }
-        }
-    }
-}
 ```
 
 ## Supported Features

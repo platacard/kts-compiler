@@ -50,7 +50,7 @@ kotlin {
 }
 
 application {
-    mainClass.set("mx.platacard.kts.MainKtKt")
+    mainClass.set("mx.platacard.kts.cli.MainKtKt")
 }
 
 tasks.shadowJar {
@@ -58,7 +58,7 @@ tasks.shadowJar {
     archiveClassifier.set("")
     archiveVersion.set("")
     manifest {
-        attributes(mapOf("Main-Class" to "mx.platacard.kts.MainKtKt"))
+        attributes(mapOf("Main-Class" to "mx.platacard.kts.cli.MainKtKt"))
     }
 }
 

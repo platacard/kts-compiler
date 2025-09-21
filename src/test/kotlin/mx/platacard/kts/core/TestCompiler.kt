@@ -1,5 +1,7 @@
-package mx.platacard.kts
+package mx.platacard.kts.core
 
+import mx.platacard.kts.core.KtsCompiler
+import mx.platacard.kts.core.Result
 import org.junit.jupiter.api.Test
 import java.io.File
 import kotlin.test.assertEquals

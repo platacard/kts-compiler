@@ -120,6 +120,24 @@ MyCommand().main(args)
 
 ## CI/CD Integration
 
+### Using the Standalone JAR
+
+First, build the standalone JAR:
+
+```bash
+./gradlew shadowJar
+```
+
+Then use the provided KTS script:
+
+```bash
+# Check single script
+kotlinc -script check-kts-scripts.main.kts -- script.main.kts
+
+# Check all scripts in directory
+kotlinc -script check-kts-scripts.main.kts -- /path/to/scripts/
+```
+
 ### GitHub Actions
 
 ```yaml
@@ -142,9 +160,11 @@ jobs:
           java-version: '17'
           distribution: 'temurin'
           
+      - name: Build JAR
+        run: ./gradlew shadowJar
+        
       - name: Check KTS scripts
-        run: |
-          ./gradlew run --args="$(find . -name '*.main.kts' -type f | tr '\n' ' ')"
+        run: kotlinc -script check-kts-scripts.main.kts -- /path/to/your/scripts/
 ```
 
 ### GitLab CI
@@ -154,10 +174,31 @@ check-kts-scripts:
   stage: test
   image: openjdk:17
   script:
-    - ./gradlew run --args="$(find . -name '*.main.kts' -type f | tr '\n' ' ')"
+    - ./gradlew shadowJar
+    - kotlinc -script check-kts-scripts.main.kts -- /path/to/your/scripts/
   only:
     changes:
       - "**/*.main.kts"
+```
+
+### Jenkins
+
+```groovy
+pipeline {
+    agent any
+    stages {
+        stage('Build') {
+            steps {
+                sh './gradlew shadowJar'
+            }
+        }
+        stage('Check KTS Scripts') {
+            steps {
+                sh 'kotlinc -script check-kts-scripts.main.kts -- /path/to/your/scripts/'
+            }
+        }
+    }
+}
 ```
 
 ## Supported Features

@@ -1,4 +1,4 @@
-package mx.platacard.kts
+package mx.platacard.kts.core
 
 sealed class Result {
     data object Success : Result()

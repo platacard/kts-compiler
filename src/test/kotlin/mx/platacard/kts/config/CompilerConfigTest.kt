@@ -15,7 +15,7 @@ internal class CompilerConfigTest {
         
         assertEquals(Duration.ofMinutes(5), config.timeout)
         assertFalse(config.verbose)
-        assertEquals(listOf("https://repo1.maven.org/maven2/"), config.repositories)
+        assertEquals(listOf("https://repo.maven.apache.org/maven2/"), config.repositories)
         assertTrue(config.enableTransitiveDependencies)
         assertTrue(config.forceHttps)
         assertFalse(config.enableConsistencyChecks)
@@ -78,7 +78,7 @@ internal class CompilerConfigTest {
         
         assertEquals(2, config.repositories.size)
         assertTrue(config.repositories.contains("https://custom.repo.com/"))
-        assertTrue(config.repositories.contains("https://repo1.maven.org/maven2/"))
+        assertTrue(config.repositories.contains("https://repo.maven.apache.org/maven2/"))
     }
 
     @Test

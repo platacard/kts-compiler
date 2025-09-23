@@ -1,6 +1,6 @@
 #!/usr/bin/env kotlin
 
-@file:Repository("https://repo1.maven.org/maven2/")
+@file:Repository("https://repo.maven.apache.org/maven2/")
 @file:DependsOn("org.springframework:spring-beans:6.1.5")
 // spring-core должен быть транзитивной зависимостью от spring-beans
 

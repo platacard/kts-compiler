@@ -44,8 +44,15 @@ object Detector {
                 )
             }
         } catch (e: Exception) {
+            val detailedMessage = when (e) {
+                is java.lang.reflect.InvocationTargetException -> {
+                    val cause = e.cause ?: e
+                    "Compilation failed: ${cause.javaClass.simpleName}: ${cause.message ?: "No message"}"
+                }
+                else -> "Compilation failed: ${e.javaClass.simpleName}: ${e.message ?: "No message"}"
+            }
             Result.Failure(
-                formattedMessage = "Compilation failed: ${e.message}",
+                formattedMessage = detailedMessage,
                 errors = listOf(e)
             )
         }
@@ -59,6 +66,12 @@ object Detector {
         cacheDir: File?
     ): ResultWithDiagnostics<CompiledScript> {
         return withMainKtsCacheDir(cacheDir?.absolutePath ?: "") {
+            // Устанавливаем classpath для Kotlin Scripting API
+            val currentClasspath = System.getProperty("java.class.path")
+            if (currentClasspath != null) {
+                System.setProperty("kotlin.script.classpath", currentClasspath)
+            }
+            
             val scriptDefinition = createJvmCompilationConfigurationFromTemplate<SimpleMainKtsScript>()
             val host = BasicJvmScriptingHost()
             

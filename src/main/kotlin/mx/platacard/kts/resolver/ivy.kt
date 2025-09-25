@@ -14,6 +14,7 @@ import org.apache.ivy.core.module.id.ModuleRevisionId
 import org.apache.ivy.core.resolve.ResolveOptions
 import org.apache.ivy.core.settings.IvySettings
 import org.apache.ivy.plugins.parser.xml.XmlModuleDescriptorWriter
+import org.apache.ivy.plugins.resolver.AbstractResolver
 import org.apache.ivy.plugins.resolver.ChainResolver
 import org.apache.ivy.plugins.resolver.IBiblioResolver
 import org.apache.ivy.plugins.resolver.URLResolver
@@ -68,6 +69,45 @@ class IvyResolver : ExternalDependenciesResolver {
 
     private val ivyResolvers = arrayListOf<URLResolver>()
 
+    private fun createMavenCentralResolver(): IBiblioResolver {
+        return IBiblioResolver().apply {
+            isM2compatible = true
+            isUsepoms = true
+            name = "central"
+            root = "https://repo.maven.apache.org/maven2/"
+            // Включаем обработку транзитивных зависимостей
+            isCheckconsistency = false
+            isValidate = false
+        }
+    }
+
+    private fun createResolverChain(): AbstractResolver {
+        return if (ivyResolvers.isEmpty()) {
+            // Если нет пользовательских репозиториев, используем только Maven Central
+            createMavenCentralResolver()
+        } else {
+            ChainResolver().also { chain ->
+                chain.name = "chain"
+                
+                // Пытаемся настроить ChainResolver через рефлексию
+                try {
+                    val returnFirstField = chain.javaClass.getDeclaredField("returnFirst")
+                    returnFirstField.isAccessible = true
+                    returnFirstField.setBoolean(chain, false)
+                } catch (e: Exception) {
+                    // Игнорируем ошибки рефлексии
+                }
+                
+                // Сначала пользовательские репозитории (приоритетные)
+                for (userResolver in ivyResolvers) {
+                    chain.add(userResolver)
+                }
+                // Потом Maven Central как fallback
+                chain.add(createMavenCentralResolver())
+            }
+        }
+    }
+
     private fun resolveArtifact(
         groupId: String,
         artifactName: String,
@@ -75,37 +115,23 @@ class IvyResolver : ExternalDependenciesResolver {
         conf: String? = null,
         type: String? = null,
     ): ResultWithDiagnostics<List<File>> {
-        // Всегда добавляем Maven Central как fallback, если его еще нет
-        if (ivyResolvers.none { it.name == "central" }) {
-            ivyResolvers.add(
-                IBiblioResolver().apply {
-                    isM2compatible = true
-                    isUsepoms = true
-                    name = "central"
-                    root = "https://repo1.maven.org/maven2/"
-                    // Включаем обработку транзитивных зависимостей
-                    isCheckconsistency = false
-                    isValidate = false
-                },
-            )
-        }
         val ivySettings =
             IvySettings().apply {
                 // Отключаем автоматическое добавление суффиксов к версиям
                 setVariable("ivy.working.dir", System.getProperty("java.io.tmpdir"))
                 setVariable("ivy.cache.dir", System.getProperty("java.io.tmpdir"))
                 
-                val resolver =
-                    if (ivyResolvers.size == 1) {
-                        ivyResolvers.first()
-                    } else {
-                        ChainResolver().also {
-                            it.name = "chain"
-                            for (resolver in ivyResolvers) {
-                                it.add(resolver)
-                            }
-                        }
-                    }
+                // Настраиваем Ivy для продолжения поиска при ошибках
+                setVariable("ivy.resolve.mode", "dynamic")
+                setVariable("ivy.chain.resolver.return.first", "false")
+                setVariable("ivy.chain.resolver.return.first.error", "false")
+                setVariable("ivy.chain.resolver.return.first.not.found", "false")
+                
+                // Настройки кэша для принудительной проверки актуальности
+                setVariable("ivy.cache.ttl.default", "0")  // Отключаем TTL кэша
+                setVariable("ivy.cache.check.updates", "true")  // Проверяем обновления
+                
+                val resolver = createResolverChain()
                 addResolver(resolver)
                 setDefaultResolver(resolver.name)
             }

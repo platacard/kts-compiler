@@ -30,7 +30,7 @@ data class CompilerConfig(
      * List of Maven repositories to use for dependency resolution.
      * Defaults to Maven Central.
      */
-    val repositories: List<String> = listOf("https://repo1.maven.org/maven2/"),
+    val repositories: List<String> = listOf("https://repo.maven.apache.org/maven2/"),
     
     /**
      * Enable transitive dependency resolution.
